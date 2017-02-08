@@ -49,7 +49,10 @@ public:
     void Get_Payout_Info(int arm);
     void Update_Expected_Reward(int arm);
     void Run_Pull(int p);
+    void Agent_Data();
     void Arm_Data();
+    void Run_Test_A();
+    void Run_Test_B();
     void Write_Arms_Pulled_To_txt_File();
     void Write_Rewards_To_txt_File();
     void Text_File_Functions();
@@ -92,7 +95,7 @@ void Q_Learner::Build_Arms()
         lever.at(a).arm_number = a;
         lever.at(a).payout = 0;
         //need to build the rest of the arm values
-        float r = (float)rand() / (float)RAND_MAX;
+        double r = (double)rand() / (double)RAND_MAX;
         lever.at(a).mean = pP->min_pay + r * (pP->max_pay - pP->min_pay);
         lever.at(a).standard = ((double) rand() / (RAND_MAX)) * pP->stdv;
     }
@@ -154,6 +157,7 @@ int Q_Learner::Random_Pull()
     cout << "TYPE OF PULL" << "\t" << "RANDOM" << endl;
     int rr = rand() % pP->num_arms;
     lever.at(rr).payout = 0;
+    
     //Box-Muller Transform
     double u1 = 0;
     double u2 = 0;
@@ -198,13 +202,13 @@ void Q_Learner::Get_Payout_Info(int arm)
     
     //saves the payout info to a vector for book keeping
     indv.at(0).arms_pulled.push_back(arm);
-    indv.at(0).reward.push_back(sum/n);
+    indv.at(0).reward.push_back(pay);
     
     cout << "ARM" << "\t" << arm << "\t";
     cout << "NUMBER OF PULLS" << "\t" << indv.at(0).num_of_pulls.at(arm) << "\t";
     cout << "PAYOUT" << "\t" << pay << "\t";
     cout << "AVE PAYOUT" << "\t" << indv.at(0).ave_arm_pay_out.at(arm) << "\t";
-    cout << "EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << endl;
+    cout << "EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << "\t";
 }
 
 
@@ -213,6 +217,7 @@ void Q_Learner::Get_Payout_Info(int arm)
 void Q_Learner::Update_Expected_Reward(int arm)
 {
     indv.at(0).expected_reward.at(arm) = lever.at(arm).payout*pP->alpha + indv.at(0).expected_reward.at(arm)*(1-pP->alpha);
+    cout << "NEW EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << endl;
 }
 
 //-------------------------------------------------------------------------
@@ -247,7 +252,21 @@ void Q_Learner::Run_Pull(int p)
 
 
 //-------------------------------------------------------------------------
-//Runs the text file functions
+//Outputs the agent data
+void Q_Learner::Agent_Data()
+{
+    cout << "----------------------------------------------------------" << endl;
+    cout << "AGENT DATA" << endl;
+    for (int a=0; a<pP->num_arms; a++)
+    {
+        cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << indv.at(0).ave_arm_pay_out.at(a) << endl;
+    }
+    cout << endl;
+}
+
+
+//-------------------------------------------------------------------------
+//Outputs the arm data
 void Q_Learner::Arm_Data()
 {
     int best = 0;
@@ -265,6 +284,21 @@ void Q_Learner::Arm_Data()
     {
         cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
     }
+    
+}
+
+
+//-------------------------------------------------------------------------
+//Checks for convergence
+void Q_Learner::Run_Test_A()
+{
+    
+}
+
+//-------------------------------------------------------------------------
+//Checks if the action value learner has a high likelihood of choosing the best arm
+void Q_Learner::Run_Test_B()
+{
     
 }
 
@@ -318,8 +352,15 @@ void Q_Learner::Run_MAB()
         cout << "PULL" << "\t" << p << endl;
         Run_Pull(p);
         cout << endl;
+        if (pP->num_pulls-p <= 10);
+        {
+            
+        }
     }
+    Agent_Data();
     Arm_Data();
+    Run_Test_A();
+    Run_Test_B();
     Text_File_Functions();
 }
 
