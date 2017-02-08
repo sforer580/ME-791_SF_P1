@@ -37,11 +37,9 @@ protected:
     
 public:
     int arm_number;
-    double arm_value;
-    double alpha = 1;
-    double epsilon = 1;
-    double sigma;
+    double payout;
     double mean;
+    double standard;
     
 private:
 };

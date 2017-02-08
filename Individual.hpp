@@ -36,7 +36,14 @@ protected:
     
     
 public:
+    vector<double> payout_sum;
+    vector<int> num_of_pulls;
+    vector<double> ave_arm_pay_out;
+    vector<double> expected_reward;
     
+    //storage
+    vector<int> arms_pulled;
+    vector<double> reward;
     
 private:
 };
