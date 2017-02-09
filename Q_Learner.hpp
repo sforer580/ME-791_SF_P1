@@ -51,8 +51,7 @@ public:
     void Run_Pull(int p);
     void Agent_Data();
     void Arm_Data();
-    void Run_Test_A();
-    void Run_Test_B();
+    void Reset_Individual();
     void Write_Arms_Pulled_To_txt_File();
     void Write_Rewards_To_txt_File();
     void Text_File_Functions();
@@ -250,6 +249,24 @@ void Q_Learner::Run_Pull(int p)
     }
 }
 
+//-------------------------------------------------------------------------
+//Resets the individual
+void Q_Learner::Reset_Individual()
+{
+    for (int i=0; i<pP->num_agents; i++)
+    {
+        for (int a=0; a<pP->num_arms; a++)
+        {
+            indv.at(i).payout_sum.at(a) = 0;
+            indv.at(i).num_of_pulls.at(a) = 0;
+            indv.at(i).ave_arm_pay_out.at(a) = 0;
+            indv.at(i).expected_reward.at(a) = 100;
+        }
+        indv.at(i).reward.clear();
+        indv.at(i).arms_pulled.clear();
+    }
+}
+
 
 //-------------------------------------------------------------------------
 //Outputs the agent data
@@ -288,27 +305,13 @@ void Q_Learner::Arm_Data()
 }
 
 
-//-------------------------------------------------------------------------
-//Checks for convergence
-void Q_Learner::Run_Test_A()
-{
-    
-}
-
-//-------------------------------------------------------------------------
-//Checks if the action value learner has a high likelihood of choosing the best arm
-void Q_Learner::Run_Test_B()
-{
-    
-}
-
 
 //-------------------------------------------------------------------------
 //Writes the arms that were pulled to a txt file
 void Q_Learner::Write_Arms_Pulled_To_txt_File()
 {
     ofstream File1;
-    File1.open("Arms_Pulled.txt");
+    File1.open("Arms_Pulled.txt", ios_base::app);
     for (int p=0; p<pP->num_pulls; p++)
     {
         File1 << indv.at(0).arms_pulled.at(p) << "\t";
@@ -323,7 +326,7 @@ void Q_Learner::Write_Arms_Pulled_To_txt_File()
 void Q_Learner::Write_Rewards_To_txt_File()
 {
     ofstream File2;
-    File2.open("Rewards.txt");
+    File2.open("Rewards.txt", ios_base::app);
     for (int p=0; p<pP->num_pulls; p++)
     {
         File2 << indv.at(0).reward.at(p) << "\t";
@@ -346,22 +349,14 @@ void Q_Learner::Text_File_Functions()
 //Runs the entire MAB
 void Q_Learner::Run_MAB()
 {
-    Build_MAB();
     for (int p=0; p<pP->num_pulls; p++)
     {
         cout << "PULL" << "\t" << p << endl;
         Run_Pull(p);
         cout << endl;
-        if (pP->num_pulls-p <= 10);
-        {
-            
-        }
     }
     Agent_Data();
     Arm_Data();
-    Run_Test_A();
-    Run_Test_B();
-    Text_File_Functions();
 }
 
 #endif /* Q_Learner_hpp */

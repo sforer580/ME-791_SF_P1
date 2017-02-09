@@ -38,7 +38,7 @@ protected:
 public:
     int num_agents = 1;
     int num_arms = 10;
-    int num_pulls = 10000;
+    int num_pulls = 500;
     double min_pay = 5;                     //[reward]
     double max_pay = 80;                    //[reward]
     double stdv = 5;
