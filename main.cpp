@@ -30,7 +30,7 @@
 void Run_Test_A()
 {
     cout << "-----------------------------------------------------------------------------------------------" << endl;
-    cout << "TEST A" << endl;
+    cout << "TEST A" << "\t";
     Parameters P;
     Parameters* pP;
     Q_Learner Q;
@@ -43,6 +43,7 @@ void Run_Test_A()
     //cout << Q.indv.at(0).expected_reward.at(0) << endl;
     assert(Q.indv.at(0).expected_reward.at(0) > (Q.lever.at(0).mean - Q.lever.at(0).standard));
     assert(Q.indv.at(0).expected_reward.at(0) < (Q.lever.at(0).mean + Q.lever.at(0).standard));
+    cout << "PASS" << endl;
     //cout << "cp" << endl;
     cout << endl;
     cout << endl;
@@ -54,7 +55,7 @@ void Run_Test_A()
 void Run_Test_B()
 {
     cout << "-----------------------------------------------------------------------------------------------" << endl;
-    cout << "TEST B" << endl;
+    cout << "TEST B" << "\t";
     Parameters P;
     Parameters* pP;
     Q_Learner Q;
@@ -75,11 +76,22 @@ void Run_Test_B()
     {
         assert(Q.indv.at(0).expected_reward.at(best_arm) >= Q.indv.at(0).expected_reward.at(a));
     }
+    cout << "PASS" << endl;
     //cout << "cp" << endl;
     cout << endl;
     cout << endl;
 }
 
+
+//-------------------------------------------------------------------------
+//Writes the parameters to a txt file
+void Write_Parameters_To_txt_File(Parameters* pP)
+{
+    ofstream File3;
+    File3.open("Parameters.txt");
+    File3 << pP->num_pulls << "\t" << pP->num_sr << endl;
+    File3.close();
+}
 
 
 int main()
@@ -90,15 +102,18 @@ int main()
     Parameters P;
     Q_Learner Q;
     Q.pP = &P;
+    Parameters* pP;
+    pP = &P;
+    
     Q.Build_MAB();
-    for (int sr=0; sr<100; sr++)
+    Q.Delete_txt_Files();
+    for (int sr=0; sr<pP->num_sr; sr++)
     {
         cout << "-----------------------------------------------------------------------------------------------" << endl;
         cout << "SR" << "\t" << sr << endl;
-        Q.Run_MAB();
-        Q.Text_File_Functions();
-        Q.Reset_Individual();
+        Q.Stat_Run();
         cout << endl;
         cout << endl;
     }
+    Write_Parameters_To_txt_File(pP);
 }

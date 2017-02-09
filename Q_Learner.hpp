@@ -54,8 +54,10 @@ public:
     void Reset_Individual();
     void Write_Arms_Pulled_To_txt_File();
     void Write_Rewards_To_txt_File();
+    void Delete_txt_Files();
     void Text_File_Functions();
     void Run_MAB();
+    void Stat_Run();
     
 private:
 };
@@ -114,7 +116,7 @@ void Q_Learner::Build_MAB()
 //Runs the optimal pull
 int Q_Learner::Smart_Pull()
 {
-    cout << "TYPE OF PULL" << "\t" << "Smart" << endl;
+    //cout << "TYPE OF PULL" << "\t" << "Smart" << endl;
     //gets the best arm number based on the expected reward for each arm
     int best_arm = 0;
     for (int a=1; a<pP->num_arms; a++)
@@ -153,7 +155,7 @@ int Q_Learner::Smart_Pull()
 //Runs the random pull
 int Q_Learner::Random_Pull()
 {
-    cout << "TYPE OF PULL" << "\t" << "RANDOM" << endl;
+    //cout << "TYPE OF PULL" << "\t" << "RANDOM" << endl;
     int rr = rand() % pP->num_arms;
     lever.at(rr).payout = 0;
     
@@ -203,11 +205,11 @@ void Q_Learner::Get_Payout_Info(int arm)
     indv.at(0).arms_pulled.push_back(arm);
     indv.at(0).reward.push_back(pay);
     
-    cout << "ARM" << "\t" << arm << "\t";
-    cout << "NUMBER OF PULLS" << "\t" << indv.at(0).num_of_pulls.at(arm) << "\t";
-    cout << "PAYOUT" << "\t" << pay << "\t";
-    cout << "AVE PAYOUT" << "\t" << indv.at(0).ave_arm_pay_out.at(arm) << "\t";
-    cout << "EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << "\t";
+    //cout << "ARM" << "\t" << arm << "\t";
+    //cout << "NUMBER OF PULLS" << "\t" << indv.at(0).num_of_pulls.at(arm) << "\t";
+    //cout << "PAYOUT" << "\t" << pay << "\t";
+    //cout << "AVE PAYOUT" << "\t" << indv.at(0).ave_arm_pay_out.at(arm) << "\t";
+    //cout << "EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << "\t";
 }
 
 
@@ -216,7 +218,7 @@ void Q_Learner::Get_Payout_Info(int arm)
 void Q_Learner::Update_Expected_Reward(int arm)
 {
     indv.at(0).expected_reward.at(arm) = lever.at(arm).payout*pP->alpha + indv.at(0).expected_reward.at(arm)*(1-pP->alpha);
-    cout << "NEW EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << endl;
+    //cout << "NEW EXPECTED PAYOUT" << "\t" << indv.at(0).expected_reward.at(arm) << endl;
 }
 
 //-------------------------------------------------------------------------
@@ -272,13 +274,13 @@ void Q_Learner::Reset_Individual()
 //Outputs the agent data
 void Q_Learner::Agent_Data()
 {
-    cout << "----------------------------------------------------------" << endl;
-    cout << "AGENT DATA" << endl;
+    //cout << "----------------------------------------------------------" << endl;
+    //cout << "AGENT DATA" << endl;
     for (int a=0; a<pP->num_arms; a++)
     {
-        cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << indv.at(0).ave_arm_pay_out.at(a) << endl;
+        //cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << indv.at(0).ave_arm_pay_out.at(a) << endl;
     }
-    cout << endl;
+    //cout << endl;
 }
 
 
@@ -294,12 +296,12 @@ void Q_Learner::Arm_Data()
             best = a;
         }
     }
-    cout << "----------------------------------------------------------" << endl;
-    cout << "ARM DATA" << endl;
-    cout << "BEST ARM" << "\t" << best << "\t" << "MEAN" << "\t" << lever.at(best).mean << "\t" << "SIGMA" <<  "\t" << lever.at(best).standard << endl;
+    //cout << "----------------------------------------------------------" << endl;
+    //cout << "ARM DATA" << endl;
+    //cout << "BEST ARM" << "\t" << best << "\t" << "MEAN" << "\t" << lever.at(best).mean << "\t" << "SIGMA" <<  "\t" << lever.at(best).standard << endl;
     for (int a=0; a<pP->num_arms; a++)
     {
-        cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
+        //cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
     }
     
 }
@@ -338,6 +340,24 @@ void Q_Learner::Write_Rewards_To_txt_File()
 
 //-------------------------------------------------------------------------
 //Runs the text file functions
+void Q_Learner::Delete_txt_Files()
+{
+    if( remove( "Rewards.txt" ) != 0 )
+        perror( "ERROR DELETING FILE" );
+    else
+        puts( "Rewards FILE SUCCEDDFULLY DELETED" );
+    
+    if( remove( "Arms_Pulled.txt" ) != 0 )
+        perror( "ERROR DELETING FILE" );
+    else
+        puts( "Arms_Pulled FILE SUCCEDDFULLY DELETED" );
+    cout << endl;
+    cout << endl;
+}
+
+
+//-------------------------------------------------------------------------
+//Runs the text file functions
 void Q_Learner::Text_File_Functions()
 {
     Write_Arms_Pulled_To_txt_File();
@@ -351,12 +371,22 @@ void Q_Learner::Run_MAB()
 {
     for (int p=0; p<pP->num_pulls; p++)
     {
-        cout << "PULL" << "\t" << p << endl;
+        //cout << "PULL" << "\t" << p << endl;
         Run_Pull(p);
-        cout << endl;
+        //cout << endl;
     }
     Agent_Data();
     Arm_Data();
+}
+
+
+//-------------------------------------------------------------------------
+//Runs a stat run
+void Q_Learner::Stat_Run()
+{
+    Run_MAB();
+    Text_File_Functions();
+    Reset_Individual();
 }
 
 #endif /* Q_Learner_hpp */

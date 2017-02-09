@@ -44,6 +44,7 @@ public:
     double stdv = 5;
     double epsilon = 0.1;
     double alpha = 0.1;
+    int num_sr = 100;
     
 private:
 };
