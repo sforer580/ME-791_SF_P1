@@ -51,9 +51,11 @@ public:
     void Run_Pull(int p);
     void Agent_Data();
     void Arm_Data();
+    void Get_Total_Times_Pulled();
     void Reset_Individual();
     void Write_Arms_Pulled_To_txt_File();
     void Write_Rewards_To_txt_File();
+    void Write_Percent_LH_To_txt_File();
     void Delete_txt_Files();
     void Text_File_Functions();
     void Run_MAB();
@@ -80,6 +82,14 @@ void Q_Learner::Build_Agent()
             indv.at(i).num_of_pulls.push_back(0);
             indv.at(i).ave_arm_pay_out.push_back(0);
             indv.at(0).expected_reward.push_back(100);
+        }
+        for (int p=0; p<pP->num_pulls; p++)
+        {
+            for (int a=0; a< pP->num_arms; a++)
+            {
+                indv.at(0).total_times_pulled.push_back(0);
+                indv.at(0).percent_LH.push_back(0);
+            }
         }
     }
 }
@@ -265,6 +275,10 @@ void Q_Learner::Reset_Individual()
             indv.at(i).expected_reward.at(a) = 100;
         }
         indv.at(i).reward.clear();
+        for (int p=0; p<pP->num_pulls; p++)
+        {
+            indv.at(0).all_arms_pulled.push_back(indv.at(0).arms_pulled.at(p));
+        }
         indv.at(i).arms_pulled.clear();
     }
 }
@@ -298,7 +312,7 @@ void Q_Learner::Arm_Data()
     }
     //cout << "----------------------------------------------------------" << endl;
     //cout << "ARM DATA" << endl;
-    //cout << "BEST ARM" << "\t" << best << "\t" << "MEAN" << "\t" << lever.at(best).mean << "\t" << "SIGMA" <<  "\t" << lever.at(best).standard << endl;
+    cout << "BEST ARM" << "\t" << best << "\t" << "MEAN" << "\t" << lever.at(best).mean << "\t" << "SIGMA" <<  "\t" << lever.at(best).standard << endl;
     for (int a=0; a<pP->num_arms; a++)
     {
         //cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
@@ -306,6 +320,51 @@ void Q_Learner::Arm_Data()
     
 }
 
+
+//-------------------------------------------------------------------------
+//Gets the total amount of times when an arm was pulled in a stat run
+void Q_Learner::Get_Total_Times_Pulled()
+{
+    for (int a=0; a<pP->num_arms; a++)
+    {
+        for (int s=0; s<pP->num_sr; s++)
+        {
+            for (int p=0; p<pP->num_pulls; p++)
+            {
+                if (indv.at(0).all_arms_pulled.at(s*pP->num_pulls+p) == a)
+                {
+                    indv.at(0).total_times_pulled.at(pP->num_pulls*a+p) += 1;
+                }
+            }
+        }
+    }
+    
+    int c = 0;
+    for (int a=0; a<pP->num_arms; a++)
+    {
+        for (int p=0; p<pP->num_pulls; p++)
+        {
+            indv.at(0).percent_LH.at(c) = indv.at(0).total_times_pulled.at(c)/pP->num_sr;
+            c += 1;
+        }
+    }
+    
+    /*
+    cout << "TOTAL TIMES PULLED" << endl;
+    int c = 0;
+    for (int a=0; a<pP->num_arms; a++)
+    {
+        cout << "ARM" << "\t" << a << endl;
+        for (int p=0; p<pP->num_pulls; p++)
+        {
+            cout << indv.at(0).total_times_pulled.at(c) << "\t";
+            c += 1;
+        }
+        cout << endl;
+    }
+    cout << endl;
+    */
+}
 
 
 //-------------------------------------------------------------------------
@@ -335,6 +394,24 @@ void Q_Learner::Write_Rewards_To_txt_File()
     }
     File2 << endl;
     File2.close();
+}
+
+
+//-------------------------------------------------------------------------
+//Writes the percent likelihood that each arm is pulled to a txt file
+void Q_Learner::Write_Percent_LH_To_txt_File()
+{
+    ofstream File4;
+    File4.open("Percent_LH.txt");
+    int c = 0;
+    for (int a=0; a<pP->num_arms; a++)
+    {
+        for (int p=0; p<pP->num_pulls; p++)
+        {
+            File4 << indv.at(0).percent_LH.at(c) << "\t";
+            c += 1;
+        }
+    }
 }
 
 

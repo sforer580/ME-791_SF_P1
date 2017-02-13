@@ -42,8 +42,11 @@ public:
     vector<double> expected_reward;
     
     //storage
-    vector<int> arms_pulled;
+    vector<double> arms_pulled;
     vector<double> reward;
+    vector<double> all_arms_pulled;
+    vector<double> total_times_pulled;
+    vector<double> percent_LH;
     
 private:
 };

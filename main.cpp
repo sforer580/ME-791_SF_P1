@@ -89,7 +89,7 @@ void Write_Parameters_To_txt_File(Parameters* pP)
 {
     ofstream File3;
     File3.open("Parameters.txt");
-    File3 << pP->num_pulls << "\t" << pP->num_sr << endl;
+    File3 << pP->num_pulls << "\t" << pP->num_sr << "\t" << pP->num_arms << endl;
     File3.close();
 }
 
@@ -115,5 +115,7 @@ int main()
         cout << endl;
         cout << endl;
     }
+    Q.Get_Total_Times_Pulled();
+    Q.Write_Percent_LH_To_txt_File();
     Write_Parameters_To_txt_File(pP);
 }

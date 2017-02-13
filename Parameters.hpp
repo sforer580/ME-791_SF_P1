@@ -38,13 +38,13 @@ protected:
 public:
     int num_agents = 1;
     int num_arms = 10;
-    int num_pulls = 500;
+    int num_pulls = 300;
     double min_pay = 5;                     //[reward]
     double max_pay = 80;                    //[reward]
     double stdv = 5;
     double epsilon = 0.1;
     double alpha = 0.1;
-    int num_sr = 100;
+    int num_sr = 30;
     
 private:
 };
