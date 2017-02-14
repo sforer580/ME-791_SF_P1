@@ -129,6 +129,7 @@ int Q_Learner::Smart_Pull()
     //cout << "TYPE OF PULL" << "\t" << "Smart" << endl;
     //gets the best arm number based on the expected reward for each arm
     int best_arm = 0;
+    const double e = numeric_limits<double>::min();
     for (int a=1; a<pP->num_arms; a++)
     {
         if (indv.at(0).expected_reward.at(best_arm) < indv.at(0).expected_reward.at(a))
@@ -143,7 +144,7 @@ int Q_Learner::Smart_Pull()
     double u2 = 0;
     double z0 = 0;
     double z1 = 0;
-    while (u1 <= pP->epsilon)
+    while (u1 <= e)
     {
         u1 = ((double) rand() / (RAND_MAX));
         u2 = ((double) rand() / (RAND_MAX));
@@ -168,13 +169,14 @@ int Q_Learner::Random_Pull()
     //cout << "TYPE OF PULL" << "\t" << "RANDOM" << endl;
     int rr = rand() % pP->num_arms;
     lever.at(rr).payout = 0;
+    const double e = numeric_limits<double>::min();
     
     //Box-Muller Transform
     double u1 = 0;
     double u2 = 0;
     double z0 = 0;
     double z1 = 0;
-    while (u1 <= pP->epsilon)
+    while (u1 <= e)
     {
         u1 = ((double) rand() / (RAND_MAX));
         u2 = ((double) rand() / (RAND_MAX));
