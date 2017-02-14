@@ -43,6 +43,7 @@ public:
     
     void Build_Agent();
     void Build_Arms();
+    void Load_Arm_Data();
     void Build_MAB();
     int Smart_Pull();
     int Random_Pull();
@@ -56,6 +57,7 @@ public:
     void Write_Arms_Pulled_To_txt_File();
     void Write_Rewards_To_txt_File();
     void Write_Percent_LH_To_txt_File();
+    void Write_Arm_Data_To_txt_File();
     void Delete_txt_Files();
     void Text_File_Functions();
     void Run_MAB();
@@ -114,11 +116,46 @@ void Q_Learner::Build_Arms()
 
 
 //-------------------------------------------------------------------------
+//Loads Arm data
+void Q_Learner::Load_Arm_Data()
+{
+    if (pP->load_arm_data == 1)
+    {
+        ifstream ifile("Arm_data.txt", ios::in);
+        vector<double> sw;
+        
+        //check to see that the file was opened correctly:
+        if (!ifile.is_open())
+        {
+            cerr << "There was a problem opening the input file!\n";
+            exit(1);//exit or do additional error checking
+        }
+        double num = 0.0;
+        //keep storing values from the text file so long as data exists:
+        while (ifile >> num)
+        {
+            sw.push_back(num);
+        }
+        int c = 0;
+        for (int a=0; a<pP->num_arms; a++)
+        {
+            lever.at(a).arm_number = sw.at(c);
+            lever.at(a).payout = sw.at(c+1);
+            lever.at(a).mean = sw.at(c+2);
+            lever.at(a).standard = sw.at(c+3);
+            c += 4;
+        }
+    }
+}
+
+
+//-------------------------------------------------------------------------
 //Builds MAB
 void Q_Learner::Build_MAB()
 {
     Build_Agent();
     Build_Arms();
+    Load_Arm_Data();
 }
 
 
@@ -317,7 +354,7 @@ void Q_Learner::Arm_Data()
     cout << "BEST ARM" << "\t" << best << "\t" << "MEAN" << "\t" << lever.at(best).mean << "\t" << "SIGMA" <<  "\t" << lever.at(best).standard << endl;
     for (int a=0; a<pP->num_arms; a++)
     {
-        //cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
+        cout << "ARM" << "\t" << a << "\t" << "MEAN" << "\t" << lever.at(a).mean << "\t" << "SIGMA" <<  "\t" << lever.at(a).standard << endl;
     }
     
 }
@@ -415,6 +452,23 @@ void Q_Learner::Write_Percent_LH_To_txt_File()
         }
     }
 }
+        
+        
+//-------------------------------------------------------------------------
+//Writes the arm data to a txt file
+void Q_Learner::Write_Arm_Data_To_txt_File()
+{
+    if (pP->save_arm_data == 1)
+    {
+        ofstream File5;
+        File5.open("Arm_Data.txt");
+        for (int a=0; a<pP->num_arms; a++)
+        {
+            lever.at(a).payout = 0;
+            File5 << lever.at(a).arm_number << "\t" << lever.at(a).payout << "\t" << lever.at(a).mean << "\t" << lever.at(a).standard << endl;
+        }
+    }
+}
 
 
 //-------------------------------------------------------------------------
@@ -433,6 +487,8 @@ void Q_Learner::Delete_txt_Files()
     cout << endl;
     cout << endl;
 }
+        
+        
 
 
 //-------------------------------------------------------------------------

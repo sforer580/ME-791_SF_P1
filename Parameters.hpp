@@ -37,7 +37,7 @@ protected:
     
 public:
     int num_agents = 1;
-    int num_arms = 10;
+    int num_arms = 4;
     int num_pulls = 300;
     double min_pay = 5;                     //[reward]
     double max_pay = 80;                    //[reward]
@@ -45,6 +45,8 @@ public:
     double epsilon = 0.1;
     double alpha = 0.1;
     int num_sr = 30;
+    int load_arm_data = 1;                  //0=off, 1=on
+    int save_arm_data = 0;                  //0=off, 1=on
     
 private:
 };

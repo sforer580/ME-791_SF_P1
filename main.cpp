@@ -117,5 +117,6 @@ int main()
     }
     Q.Get_Total_Times_Pulled();
     Q.Write_Percent_LH_To_txt_File();
+    Q.Write_Arm_Data_To_txt_File();
     Write_Parameters_To_txt_File(pP);
 }
