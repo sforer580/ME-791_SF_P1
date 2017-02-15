@@ -74,7 +74,11 @@ void Run_Test_B()
     }
     for (int a=1; a<pP->num_arms; a++)
     {
-        assert(Q.indv.at(0).expected_reward.at(best_arm) >= Q.indv.at(0).expected_reward.at(a));
+        if (best_arm == a)
+        {
+            a += 1;
+        }
+        assert(Q.indv.at(0).expected_reward.at(best_arm) > Q.lever.at(a).mean);
     }
     cout << "PASS" << endl;
     //cout << "cp" << endl;

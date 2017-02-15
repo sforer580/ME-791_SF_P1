@@ -43,7 +43,7 @@ public:
     double max_pay = 80;                    //[reward]
     double stdv = 5;
     double epsilon = 0.1;
-    double alpha = 0.1;
+    double alpha = 0.5;
     int num_sr = 30;
     int load_arm_data = 1;                  //0=off, 1=on
     int save_arm_data = 0;                  //0=off, 1=on
